@@ -1,10 +1,10 @@
 ---
+import { Image } from "astro:assets"; // 1. Import the Astro Image component
 import { getCollection } from "astro:content";
 import CarouselItem from "../CarouselItem.astro";
 
 const LIMIT = 12;
 
-// 1. Fetching from 'posts' or your primary visual collection since 'photos' isn't registered
 const entries = await getCollection("posts");
 const limitedEntries = entries.slice(0, LIMIT);
 ---
@@ -12,10 +12,13 @@ const limitedEntries = entries.slice(0, LIMIT);
 {
   limitedEntries.map((photo) => (
     <CarouselItem>
-      {/* 2. Using Astro's native standard ID pattern instead of photo.url */}
       <a href={`/posts/${photo.id}`}>
-        {/* 3. Using the correct schema property layout pointed out by the log (photo.data.img) */}
-        <img src={photo.data.img?.src} alt={photo.data.img?.alt || photo.data.title} />
+        {/* 2. Use <Image /> and pass the entire object to 'src' */}
+        {photo.data.img ? (
+          <Image src={photo.data.img} alt={photo.data.img.alt || photo.data.title} />
+        ) : (
+          <span>No image available</span>
+        )}
       </a>
     </CarouselItem>
   ))
@@ -27,8 +30,8 @@ const limitedEntries = entries.slice(0, LIMIT);
     height: 220px;
     width: auto;
   }
-
-  img {
+  /* Style the Astro component output or your layout as normal */
+  a :global(img) { 
     display: block;
     height: 100%;
     width: auto;
